@@ -2,9 +2,10 @@
   <style>
     .bg { fill: #ffffff } .ink { fill: #1f2328 } .muted { fill: #59636e } .grid { stroke: #d1d9e0 } .axis { stroke: #1f2328 }
     .bar { fill: #0969da } .bar2 { fill: #bf8700 }
+    .halo { stroke: #ffffff; stroke-width: 3px; paint-order: stroke }
     @media (prefers-color-scheme: dark) {
       .bg { fill: #0d1117 } .ink { fill: #e6edf3 } .muted { fill: #9198a1 } .grid { stroke: #30363d } .axis { stroke: #9198a1 }
-      .bar { fill: #4493f8 } .bar2 { fill: #d29922 }
+      .bar { fill: #4493f8 } .bar2 { fill: #d29922 } .halo { stroke: #0d1117 }
     }
   </style>
   <rect class="bg" width="640" height="400"/>
@@ -35,7 +36,7 @@
     <text class="muted" x="473" y="350">Oct 13</text><text class="muted" x="561" y="350">Oct 20</text>
   </g>
   <!-- value label on the last bar -->
-  <text class="ink" x="545" y="94" font-size="12" font-weight="600" text-anchor="middle">1,900</text>
+  <text class="ink halo" x="545" y="94" font-size="12" font-weight="600" text-anchor="middle">1,900</text>
   <!-- legend -->
   <rect class="bar" x="70" y="372" width="12" height="12"/><text class="muted" x="88" y="382" font-size="12">Linux</text>
   <rect class="bar2" x="140" y="372" width="12" height="12"/><text class="muted" x="158" y="382" font-size="12">macOS</text>
