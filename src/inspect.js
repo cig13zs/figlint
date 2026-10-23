@@ -334,6 +334,7 @@ export function inspect(opts) {
       el, tag, box, m, op, fill, stroke, fillA, strokeA, sw, commands, closed, open,
       complex: commands > 60,
       hint, markerStart, markerEnd,
+      dashed: (s.strokeDasharray || 'none') !== 'none',
       canvas: canvasOf(el),
       geometry: GEOMETRY.has(tag),
     });
@@ -757,7 +758,8 @@ export function inspect(opts) {
   const touches = (t, p, tol) => {
     if (distToBox(t.box, p) > tol + (t.shape ? t.shape.sw / 2 : 0)) return false;
     if (!t.geometry) return true;
-    if (t.kind === 'line') {
+    // Dashed strokes have gaps that isPointInStroke misses; measure distance to the path instead.
+    if (t.kind === 'line' && t.shape.dashed) {
       const reach = tol + t.shape.sw / 2 + 1;
       return samples(t.shape).some((q) => Math.hypot(q.x - p.x, q.y - p.y) <= reach);
     }
@@ -805,7 +807,7 @@ export function inspect(opts) {
     for (const s of shapes) {
       if (!s.geometry || !s.open || s.strokeA < 0.05 || s.sw <= 0) continue;
       if (ignoredFor(s.el, 'dangling-connector')) continue;
-      const dashed = (cs(s.el).strokeDasharray || 'none') !== 'none';
+      const dashed = s.dashed;
       const explicit = s.hint || s.markerStart || s.markerEnd;
       if (!explicit && (s.complex || dashed || rails.has(s.el))) continue;
       const ends = endsOf(s);

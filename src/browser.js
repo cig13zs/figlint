@@ -93,7 +93,7 @@ export async function launch({ chrome } = {}) {
     }
   }
   throw new Error(
-    'figlint could not start a browser. Install one with `npx playwright-core install chromium`, ' +
+    'could not start a browser. Install one with `npx playwright-core install chromium`, ' +
       'or point FIGLINT_CHROME at Chrome, Edge or Chromium.\n  ' +
       errors.join('\n  '),
   );
