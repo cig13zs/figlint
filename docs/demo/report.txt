@@ -1,0 +1,32 @@
+figlint broken.svg  (svg, light + dark, 720x440)
+
+  1. error  text-overlap  "POST /charge" overlaps "POST /score"
+       at   svg > text.edge-label:nth-of-type(8)  (416,183 93x17)
+       with svg > text.edge-label:nth-of-type(9)  (430,193 84x17)
+       fix  move "POST /score" 5px down (or "POST /charge" 5px up)
+
+  2. error  text-clipped  "How one checkout request moves through …" is cut off by the SVG viewBox (49px past the left, 49px past the right)
+       at   svg > text.title:nth-of-type(1)  (-48,24 816x31)
+       with svg  (0,0 720x440)
+       fix  the text is bigger than the SVG viewBox: shorten it, break it into two lines, or use a smaller font size
+
+  3. error  dangling-connector  path ends in mid-air: end at (325, 312) is 28px from svg > rect.db:nth-of-type(6)
+       at   svg > path.edge:nth-of-type(4)  (325,250 0x62)
+       with svg > rect.db:nth-of-type(6)  (250,340 150x56)
+       fix  extend the end to (325, 340) in the path's coordinates, the edge of svg > rect.db:nth-of-type(6)
+
+  4. error  low-contrast  "Arrows show synchronous calls. Times ar…" has contrast 2.11:1 on #0d1117 (needs 4.5:1) [dark only]
+       at   svg > text.note:nth-of-type(10)  (30,412 294x16)
+       fix  in the dark theme (prefers-color-scheme: dark), use #7b8087 for the text (now #424a53), or change the background
+
+  5. warn   label-on-line  path runs through "POST /charge"
+       at   svg > text.edge-label:nth-of-type(8)  (416,183 93x17)
+       with svg > path.edge:nth-of-type(2)  (400,130 120x80)
+       fix  move the label off the line, or give it a halo: stroke="<background color>" stroke-width="3" paint-order="stroke"
+
+  6. warn   label-on-line  path runs through "retry x3"
+       at   svg > text.edge-label:nth-of-type(7)  (182,211 51x17)
+       with svg > path.edge:nth-of-type(1)  (160,220 90x0)
+       fix  move the label off the line, or give it a halo: stroke="<background color>" stroke-width="3" paint-order="stroke"
+
+4 errors, 2 warnings

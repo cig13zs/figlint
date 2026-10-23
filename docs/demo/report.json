@@ -1,0 +1,242 @@
+{
+  "figlint": "0.1.0",
+  "file": "broken.svg",
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "viewport": {
+    "width": 720,
+    "height": 440
+  },
+  "document": "svg",
+  "ok": false,
+  "errors": 4,
+  "warnings": 2,
+  "findings": [
+    {
+      "rule": "text-overlap",
+      "severity": "error",
+      "message": "\"POST /charge\" overlaps \"POST /score\"",
+      "selector": "svg > text.edge-label:nth-of-type(8)",
+      "box": {
+        "x": 416,
+        "y": 183,
+        "width": 92.6,
+        "height": 17
+      },
+      "text": "POST /charge",
+      "related": [
+        {
+          "selector": "svg > text.edge-label:nth-of-type(9)",
+          "box": {
+            "x": 430,
+            "y": 193,
+            "width": 83.6,
+            "height": 17
+          },
+          "text": "POST /score"
+        }
+      ],
+      "hint": "move \"POST /score\" 5px down (or \"POST /charge\" 5px up)",
+      "data": {
+        "overlap": {
+          "x": 430.7,
+          "y": 195.8,
+          "width": 77.2,
+          "height": 2.2
+        }
+      },
+      "themes": [
+        "light",
+        "dark"
+      ]
+    },
+    {
+      "rule": "text-clipped",
+      "severity": "error",
+      "message": "\"How one checkout request moves through …\" is cut off by the SVG viewBox (49px past the left, 49px past the right)",
+      "selector": "svg > text.title:nth-of-type(1)",
+      "box": {
+        "x": -48.1,
+        "y": 24,
+        "width": 816.2,
+        "height": 31
+      },
+      "text": "How one checkout request moves through …",
+      "related": [
+        {
+          "selector": "svg",
+          "box": {
+            "x": 0,
+            "y": 0,
+            "width": 720,
+            "height": 440
+          }
+        }
+      ],
+      "hint": "the text is bigger than the SVG viewBox: shorten it, break it into two lines, or use a smaller font size",
+      "data": {
+        "outside": {
+          "left": 48.1,
+          "right": 48.1,
+          "top": 0,
+          "bottom": 0
+        }
+      },
+      "themes": [
+        "light",
+        "dark"
+      ]
+    },
+    {
+      "rule": "dangling-connector",
+      "severity": "error",
+      "message": "path ends in mid-air: end at (325, 312) is 28px from svg > rect.db:nth-of-type(6)",
+      "selector": "svg > path.edge:nth-of-type(4)",
+      "box": {
+        "x": 325,
+        "y": 250,
+        "width": 0,
+        "height": 62
+      },
+      "related": [
+        {
+          "selector": "svg > rect.db:nth-of-type(6)",
+          "box": {
+            "x": 250,
+            "y": 340,
+            "width": 150,
+            "height": 56
+          }
+        }
+      ],
+      "hint": "extend the end to (325, 340) in the path's coordinates, the edge of svg > rect.db:nth-of-type(6)",
+      "data": {
+        "ends": [
+          {
+            "which": "end",
+            "at": {
+              "x": 325,
+              "y": 312
+            },
+            "nearest": {
+              "selector": "svg > rect.db:nth-of-type(6)",
+              "distance": 28,
+              "point": {
+                "x": 325,
+                "y": 340
+              },
+              "local": {
+                "x": 325,
+                "y": 340
+              }
+            }
+          }
+        ],
+        "explicit": true
+      },
+      "themes": [
+        "light",
+        "dark"
+      ]
+    },
+    {
+      "rule": "low-contrast",
+      "severity": "error",
+      "message": "\"Arrows show synchronous calls. Times ar…\" has contrast 2.11:1 on #0d1117 (needs 4.5:1)",
+      "selector": "svg > text.note:nth-of-type(10)",
+      "text": "Arrows show synchronous calls. Times ar…",
+      "box": {
+        "x": 30,
+        "y": 412,
+        "width": 294,
+        "height": 16
+      },
+      "related": [],
+      "hint": "in the dark theme (prefers-color-scheme: dark), use #7b8087 for the text (now #424a53), or change the background",
+      "data": {
+        "ratio": 2.11,
+        "required": 4.5,
+        "foreground": "#424a53",
+        "background": "#0d1117",
+        "fontSize": 13,
+        "suggestion": "#7b8087"
+      },
+      "themes": [
+        "dark"
+      ]
+    },
+    {
+      "rule": "label-on-line",
+      "severity": "warning",
+      "message": "path runs through \"POST /charge\"",
+      "selector": "svg > text.edge-label:nth-of-type(8)",
+      "box": {
+        "x": 416,
+        "y": 183,
+        "width": 92.6,
+        "height": 17
+      },
+      "text": "POST /charge",
+      "related": [
+        {
+          "selector": "svg > path.edge:nth-of-type(2)",
+          "box": {
+            "x": 400,
+            "y": 130,
+            "width": 120,
+            "height": 80
+          }
+        }
+      ],
+      "hint": "move the label off the line, or give it a halo: stroke=\"<background color>\" stroke-width=\"3\" paint-order=\"stroke\"",
+      "data": {
+        "approxCrossingPx": 18
+      },
+      "themes": [
+        "light",
+        "dark"
+      ]
+    },
+    {
+      "rule": "label-on-line",
+      "severity": "warning",
+      "message": "path runs through \"retry x3\"",
+      "selector": "svg > text.edge-label:nth-of-type(7)",
+      "box": {
+        "x": 182,
+        "y": 211,
+        "width": 51.4,
+        "height": 17
+      },
+      "text": "retry x3",
+      "related": [
+        {
+          "selector": "svg > path.edge:nth-of-type(1)",
+          "box": {
+            "x": 160,
+            "y": 220,
+            "width": 90,
+            "height": 0
+          }
+        }
+      ],
+      "hint": "move the label off the line, or give it a halo: stroke=\"<background color>\" stroke-width=\"3\" paint-order=\"stroke\"",
+      "data": {
+        "approxCrossingPx": 48
+      },
+      "themes": [
+        "light",
+        "dark"
+      ]
+    }
+  ],
+  "notes": [],
+  "shots": [],
+  "stats": {
+    "texts": 10,
+    "shapes": 10,
+    "boxes": 0
+  }
+}
