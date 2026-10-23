@@ -94,18 +94,17 @@ function contrastFindings(items, backgrounds, theme) {
     const need = required(it.fontSize, it.weight);
     if (ratio >= need) return;
     const better = suggest(fg, bg, need);
-    const where = theme === 'dark' ? ' in the dark theme' : '';
     out.push({
       rule: 'low-contrast',
       severity: ratio < 3 ? 'error' : 'warning',
-      message: `"${it.text}" has contrast ${ratio.toFixed(2)}:1 on ${hex(bg)}${where} (needs ${need}:1)`,
+      message: `"${it.text}" has contrast ${ratio.toFixed(2)}:1 on ${hex(bg)} (needs ${need}:1)`,
       selector: it.selector,
       text: it.text,
       box: it.box,
       related: [],
       hint: better
-        ? `use ${better} for the text${where} (now ${hex(fg)}), or change the background`
-        : `change the background behind the text${where}`,
+        ? `use ${better} for the text (now ${hex(fg)}), or change the background`
+        : `change the background behind the text`,
       data: {
         ratio: Math.round(ratio * 100) / 100,
         required: need,

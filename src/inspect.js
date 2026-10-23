@@ -529,7 +529,8 @@ export function inspect(opts) {
       if (ignoredFor(t.el, 'text-clipped')) continue;
       let clipper = null;
       let clip = null;
-      for (let n = t.el.parentElement; n && n.nodeType === 1; n = n.parentElement) {
+      // An HTML element clips its own text, so start the walk at the element itself.
+      for (let n = t.svg ? t.el.parentElement : t.el; n && n.nodeType === 1; n = n.parentElement) {
         if (n === document.documentElement || n === document.body) break;
         if (isSvg(n)) {
           if (n.localName !== 'svg' && n.localName !== 'foreignObject') continue;
@@ -580,13 +581,13 @@ export function inspect(opts) {
             ? `move it ${Math.ceil(amount) + 2}px ${away}, or grow the viewBox on the ${side}`
             : c.what === 'the page'
               ? `move it ${Math.ceil(amount) + 2}px ${away}`
-              : `shorten the text, let it wrap, or make the ${c.what} ${Math.ceil(amount) + 2}px larger`;
+              : `shorten the text, let it wrap, or make the ${c.what} ${Math.ceil(amount) + 2}px ${side === 'left' || side === 'right' ? 'wider' : 'taller'}`;
         findings.push({
           rule: 'text-clipped',
           severity: 'error',
           message: `"${t.text}" is cut off by ${c.what} (${desc})`,
           ...describe(t.el, t.box, t.text),
-          related: c.el ? [describe(c.el, c.box)] : [],
+          related: c.el && c.el !== t.el ? [describe(c.el, c.box)] : [],
           hint,
           data: { outside: { left: R(out.left), right: R(out.right), top: R(out.top), bottom: R(out.bottom) } },
         });
@@ -652,7 +653,9 @@ export function inspect(opts) {
     for (const s of shapes) {
       if (s.complex) continue;
       if (s.fillA < 0.05 && s.strokeA < 0.05) continue;
+      // Backgrounds that bleed past every edge are deliberate.
       if (area(s.box) > 1.5 * area(s.canvas)) continue;
+      if (s.box.x <= s.canvas.x && s.box.y <= s.canvas.y && s.box.x + s.box.w >= s.canvas.x + s.canvas.w && s.box.y + s.box.h >= s.canvas.y + s.canvas.h) continue;
       if (clippedByAncestor(s.el)) continue;
       report(s.el, s.box, s.canvas, s.canvas === page ? 'the page' : 'the SVG viewBox');
     }
