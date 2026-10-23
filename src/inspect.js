@@ -656,6 +656,8 @@ export function inspect(opts) {
       const worst = Object.entries(over).sort((a, b) => b[1] - a[1])[0];
       if (worst[1] < 2) return;
       const full = outside >= 0.98;
+      // Irregular paths cropped by the frame are normal on maps; only report them when fully gone.
+      if (!full && el.localName === 'path') return;
       const away = { left: 'right', right: 'left', top: 'down', bottom: 'up' }[worst[0]];
       findings.push({
         rule: 'off-canvas',

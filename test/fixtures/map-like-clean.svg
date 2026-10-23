@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250" viewBox="0 0 400 250">
+  <rect width="400" height="250" fill="#d7e3e8"/>
+  <!-- land shapes cropped by the frame, labels across their edges -->
+  <path d="M-40 60 L180 40 L210 160 L60 220 L-40 200 Z" fill="#e4ddcf" stroke="#fbf8f1"/>
+  <path d="M180 40 L330 70 L300 200 L210 160 Z" fill="#d8cfbd" stroke="#fbf8f1"/>
+  <text x="150" y="110" font-family="sans-serif" font-size="13" fill="#2a2723">Border town</text>
+  <!-- a data layer that runs past the frame -->
+  <g>
+    <circle cx="41" cy="55" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="-95" cy="269" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="205" cy="145" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="-42" cy="-54" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="-132" cy="-90" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="211" cy="181" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="96" cy="309" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="583" cy="-70" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="27" cy="166" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="349" cy="84" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="83" cy="299" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="-24" cy="323" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="-92" cy="34" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="19" cy="-87" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="456" cy="313" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="66" cy="309" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="78" cy="-1" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="-32" cy="58" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="96" cy="221" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="549" cy="337" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="181" cy="-56" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="420" cy="72" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="487" cy="98" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="318" cy="27" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="-18" cy="26" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="284" cy="43" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="-109" cy="318" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="360" cy="330" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="107" cy="-97" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="98" cy="193" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="521" cy="59" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="583" cy="160" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="-1" cy="111" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="233" cy="206" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="95" cy="120" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="262" cy="-18" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="38" cy="56" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="65" cy="316" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="-156" cy="-59" r="4" fill="#b8552f" fill-opacity="0.8"/>
+    <circle cx="-153" cy="136" r="4" fill="#b8552f" fill-opacity="0.8"/>
+  </g>
+  <!-- two-tone label: dark name and muted value on the same line -->
+  <text x="20" y="240" font-family="sans-serif" font-size="13" font-weight="600" fill="#ffffff" stroke="#fbf8f1" stroke-width="3" paint-order="stroke"><tspan fill="#2a2723">Lagos</tspan> <tspan fill="#5c564d" font-weight="400">16.5M</tspan></text>
+</svg>

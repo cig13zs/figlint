@@ -83,6 +83,10 @@ describe('off-canvas', () => {
   test('bleeding backgrounds and clip-path crops are fine', async () => {
     clean(await run('offcanvas-clean.svg'));
   });
+
+  test('map-like figure: cropped land, data layer past the frame, two-tone label', async () => {
+    clean(await run('map-like-clean.svg'));
+  });
 });
 
 describe('dangling-connector', () => {
