@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="440" viewBox="0 0 720 440" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <style>
+    .bg { fill: #ffffff }
+    .node { fill: #ddf4ff; stroke: #0969da; stroke-width: 1.5 }
+    .db { fill: #fff8c5; stroke: #9a6700; stroke-width: 1.5 }
+    .name { fill: #1f2328; font-size: 16px; font-weight: 600 }
+    .title { fill: #1f2328; font-size: 26px; font-weight: 700 }
+    .edge { stroke: #57606a; stroke-width: 2; fill: none }
+    .edge-label { fill: #57606a; font-size: 14px; stroke: #ffffff; stroke-width: 4px; paint-order: stroke }
+    .note { fill: #424a53; font-size: 13px }
+    .arrowhead { fill: #57606a }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #0d1117 }
+      .node { fill: #0c2d6b; stroke: #4493f8 }
+      .db { fill: #3b2300; stroke: #d29922 }
+      .name, .title { fill: #e6edf3 }
+      .edge { stroke: #8d96a0 }
+      .edge-label { fill: #8d96a0; stroke: #0d1117 }
+      .note { fill: #8d96a0 }
+      .arrowhead { fill: #8d96a0 }
+    }
+  </style>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path class="arrowhead" d="M0 0 L10 5 L0 10 z"/>
+    </marker>
+  </defs>
+  <rect class="bg" width="720" height="440"/>
+
+  <text class="title" x="360" y="48" text-anchor="middle">Checkout request path</text>
+
+  <!-- nodes -->
+  <rect class="node" x="30" y="190" width="130" height="60" rx="10"/>
+  <text class="name" x="95" y="226" text-anchor="middle">Cart</text>
+  <rect class="node" x="250" y="190" width="150" height="60" rx="10"/>
+  <text class="name" x="325" y="226" text-anchor="middle">API gateway</text>
+  <rect class="node" x="520" y="100" width="170" height="60" rx="10"/>
+  <text class="name" x="605" y="136" text-anchor="middle">Payment API</text>
+  <rect class="node" x="520" y="280" width="170" height="60" rx="10"/>
+  <text class="name" x="605" y="316" text-anchor="middle">Fraud check</text>
+  <rect class="db" x="250" y="340" width="150" height="56" rx="10"/>
+  <text class="name" x="325" y="374" text-anchor="middle">Orders DB</text>
+
+  <!-- edges -->
+  <path class="edge" d="M160 220 L250 220" marker-end="url(#arrow)"/>
+  <path class="edge" d="M400 210 L520 130" marker-end="url(#arrow)"/>
+  <path class="edge" d="M400 230 L520 310" marker-end="url(#arrow)"/>
+  <path class="edge" d="M325 250 L325 340" marker-end="url(#arrow)"/>
+
+  <!-- edge labels -->
+  <text class="edge-label" x="205" y="208" text-anchor="middle">retry x3</text>
+  <text class="edge-label" x="372" y="150">POST /charge</text>
+  <text class="edge-label" x="372" y="296">POST /score</text>
+
+  <text class="note" x="30" y="424">Arrows show synchronous calls. Times are p95.</text>
+</svg>
