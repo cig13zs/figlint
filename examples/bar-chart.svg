@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400" viewBox="0 0 640 400" font-family="Inter, Helvetica, Arial, sans-serif">
+  <style>
+    .bg { fill: #ffffff } .ink { fill: #1f2328 } .muted { fill: #59636e } .grid { stroke: #d1d9e0 } .axis { stroke: #1f2328 }
+    .bar { fill: #0969da } .bar2 { fill: #bf8700 }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #0d1117 } .ink { fill: #e6edf3 } .muted { fill: #9198a1 } .grid { stroke: #30363d } .axis { stroke: #9198a1 }
+      .bar { fill: #4493f8 } .bar2 { fill: #d29922 }
+    }
+  </style>
+  <rect class="bg" width="640" height="400"/>
+  <text class="ink" x="40" y="36" font-size="20" font-weight="700">Build minutes per week</text>
+  <text class="muted" x="40" y="58" font-size="13">Linux and macOS runners, last six weeks</text>
+  <!-- gridlines and y ticks -->
+  <g font-size="12" text-anchor="end">
+    <line class="grid" x1="70" x2="600" y1="330" y2="330"/><text class="muted" x="62" y="334">0</text>
+    <line class="grid" x1="70" x2="600" y1="270" y2="270"/><text class="muted" x="62" y="274">500</text>
+    <line class="grid" x1="70" x2="600" y1="210" y2="210"/><text class="muted" x="62" y="214">1,000</text>
+    <line class="grid" x1="70" x2="600" y1="150" y2="150"/><text class="muted" x="62" y="154">1,500</text>
+    <line class="grid" x1="70" x2="600" y1="90" y2="90"/><text class="muted" x="62" y="94">2,000</text>
+  </g>
+  <line class="axis" x1="70" x2="600" y1="330" y2="330"/>
+  <!-- bars: linux then mac per week -->
+  <g>
+    <rect class="bar" x="90" y="186" width="30" height="144"/><rect class="bar2" x="122" y="282" width="30" height="48"/>
+    <rect class="bar" x="178" y="162" width="30" height="168"/><rect class="bar2" x="210" y="270" width="30" height="60"/>
+    <rect class="bar" x="266" y="174" width="30" height="156"/><rect class="bar2" x="298" y="276" width="30" height="54"/>
+    <rect class="bar" x="354" y="138" width="30" height="192"/><rect class="bar2" x="386" y="258" width="30" height="72"/>
+    <rect class="bar" x="442" y="114" width="30" height="216"/><rect class="bar2" x="474" y="246" width="30" height="84"/>
+    <rect class="bar" x="530" y="102" width="30" height="228"/><rect class="bar2" x="562" y="240" width="30" height="90"/>
+  </g>
+  <!-- x labels -->
+  <g font-size="12" text-anchor="middle" class="muted">
+    <text class="muted" x="121" y="350">Sep 15</text><text class="muted" x="209" y="350">Sep 22</text>
+    <text class="muted" x="297" y="350">Sep 29</text><text class="muted" x="385" y="350">Oct 6</text>
+    <text class="muted" x="473" y="350">Oct 13</text><text class="muted" x="561" y="350">Oct 20</text>
+  </g>
+  <!-- value label on the last bar -->
+  <text class="ink" x="545" y="94" font-size="12" font-weight="600" text-anchor="middle">1,900</text>
+  <!-- legend -->
+  <rect class="bar" x="70" y="372" width="12" height="12"/><text class="muted" x="88" y="382" font-size="12">Linux</text>
+  <rect class="bar2" x="140" y="372" width="12" height="12"/><text class="muted" x="158" y="382" font-size="12">macOS</text>
+</svg>

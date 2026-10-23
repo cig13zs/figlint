@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Release flow</title>
+<style>
+  :root { color-scheme: light dark; --bg: #ffffff; --ink: #1f2328; --muted: #59636e; --node: #f6f8fa; --line: #d1d9e0; --accent: #0969da; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #0d1117; --ink: #e6edf3; --muted: #9198a1; --node: #151b23; --line: #3d444d; --accent: #4493f8; } }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.4 Inter, system-ui, sans-serif; }
+  .wrap { width: 900px; margin: 32px auto; }
+  h1 { font-size: 24px; margin: 0 0 4px; } p.dek { color: var(--muted); margin: 0 0 28px; }
+  .stage { position: relative; height: 300px; }
+  .node { position: absolute; width: 170px; padding: 12px 14px; box-sizing: border-box; background: var(--node);
+          border: 1px solid var(--line); border-radius: 10px; }
+  .node b { display: block; font-size: 15px; } .node span { color: var(--muted); font-size: 13px; }
+  .node.hot { border-color: var(--accent); }
+  svg.wires { position: absolute; inset: 0; overflow: visible; }
+  .wire { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+  .wire-label { fill: var(--muted); font-size: 12px; stroke: var(--bg); stroke-width: 4px; paint-order: stroke; }
+</style></head><body>
+<div class="wrap">
+  <h1>How a release goes out</h1>
+  <p class="dek">From a merged pull request to every user, about 40 minutes end to end.</p>
+  <div class="stage">
+    <svg class="wires" width="900" height="300">
+      <defs><marker id="tip" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#59636e"/></marker></defs>
+      <path class="wire" d="M170 40 L240 40" marker-end="url(#tip)"/>
+      <path class="wire" d="M410 40 L480 40" marker-end="url(#tip)"/>
+      <path class="wire" d="M650 40 L720 40" marker-end="url(#tip)"/>
+      <path class="wire" d="M805 80 L805 140 L650 200" marker-end="url(#tip)"/>
+      <path class="wire" d="M480 220 L410 220" marker-end="url(#tip)"/>
+      <text class="wire-label" x="760" y="135">canary ok</text>
+      <text class="wire-label" x="445" y="212" text-anchor="middle">25%</text>
+    </svg>
+    <div class="node" style="left:0; top:0"><b>Merge</b><span>main is green</span></div>
+    <div class="node" style="left:240px; top:0"><b>Build</b><span>signed artifacts</span></div>
+    <div class="node" style="left:480px; top:0"><b>Staging</b><span>smoke tests</span></div>
+    <div class="node hot" style="left:720px; top:0"><b>Canary</b><span>1% of traffic</span></div>
+    <div class="node" style="left:480px; top:180px"><b>Ramp</b><span>5, 25, 50%</span></div>
+    <div class="node" style="left:240px; top:180px"><b>Everyone</b><span>100% rollout</span></div>
+  </div>
+</div>
+</body></html>
