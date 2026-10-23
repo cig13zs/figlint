@@ -365,6 +365,20 @@ export function inspect(opts) {
     (s) => s.geometry && (s.open || (s.closed && s.fillA < 0.05)) && s.strokeA >= 0.3 && s.sw >= 0.5,
   );
 
+  // Shapes that sit among many siblings of the same kind are a data layer
+  // (map countries, scatter dots), not hand-placed diagram parts.
+  const crowd = new Map();
+  const inCrowd = (el) => {
+    const p = el.parentElement;
+    if (!p) return false;
+    if (!crowd.has(p)) {
+      const counts = {};
+      for (const c of p.children) counts[c.localName] = (counts[c.localName] || 0) + 1;
+      crowd.set(p, counts);
+    }
+    return crowd.get(p)[el.localName] >= 25;
+  };
+
   const related = (a, b) => a === b || a.contains(b) || b.contains(a);
   const describe = (el, box, text) => {
     const o = { selector: selectorOf(el), box: boxOut(box) };
@@ -479,11 +493,16 @@ export function inspect(opts) {
 
   if (ruleOn('text-shape-overlap')) {
     const filled = [
-      ...nodeShapes.filter((s) => s.fillA >= 0.15).map((s) => ({ el: s.el, box: s.box, svg: s.geometry })),
+      // Paths are left out: on maps and charts, labels cross region edges all the time.
+      ...nodeShapes
+        .filter((s) => s.fillA >= 0.15 && s.tag !== 'path' && !inCrowd(s.el))
+        .map((s) => ({ el: s.el, box: s.box, svg: s.geometry })),
       ...nodeBoxes.filter((b) => b.bgA >= 0.15 || b.replaced).map((b) => ({ el: b.el, box: b.box, svg: false })),
     ];
     for (const t of texts) {
       if (ignoredFor(t.el, 'text-shape-overlap') || coveredPairs.has(t.el)) continue;
+      // A haloed label is drawn to sit on top of things.
+      if (t.halo && t.halo.a >= 0.6) continue;
       const tArea = t.cores.reduce((s, c) => s + area(c), 0);
       for (const f of filled) {
         if (related(f.el, t.el)) continue;
@@ -650,8 +669,10 @@ export function inspect(opts) {
         data: { outsideFraction: R(outside), overflow: Object.fromEntries(Object.entries(over).map(([k, v]) => [k, R(v)])) },
       });
     };
+    // Data layers (map countries, scatter dots) are cropped by the frame on purpose.
     for (const s of shapes) {
       if (s.complex) continue;
+      if (inCrowd(s.el)) continue;
       if (s.fillA < 0.05 && s.strokeA < 0.05) continue;
       // Backgrounds that bleed past every edge are deliberate.
       if (area(s.box) > 1.5 * area(s.canvas)) continue;
@@ -830,7 +851,7 @@ export function inspect(opts) {
         if (!cores.some((c) => inter(grow(s.box, s.sw / 2 + 0.5), c))) continue;
         const ends = s.open ? endsOf(s) : null;
         if (ends && [ends.start, ends.end].some((p) => contains(grow(t.box, tolerance + 2), p))) continue;
-        const inside = samples(s).filter((p) => cores.some((c) => contains(c, p)));
+        const inside = samples(s).filter((p) => contains(s.canvas, p) && cores.some((c) => contains(c, p)));
         if (!inside.length) continue;
         // Visible through the label? Look at what is painted at a few of the points.
         let visible = 0;
@@ -854,7 +875,8 @@ export function inspect(opts) {
           }
           if (!hidden) visible++;
         }
-        if (checked && !visible) continue;
+        // Never hit: the line is clipped away or buried under something at the label.
+        if (!visible) continue;
         const crossing = inside.length * 1.5;
         findings.push({
           rule: 'label-on-line',
@@ -874,32 +896,67 @@ export function inspect(opts) {
   // ---------- data for the contrast pass ----------
 
   const contrastItems = [];
+  const coreOf = (r, fs) => {
+    const top = Math.min(0.2 * fs, r.h * 0.22);
+    const bot = Math.min(0.14 * fs, r.h * 0.16);
+    const side = Math.min(0.05 * fs, r.w * 0.1);
+    return { x: r.x + side, y: r.y + top, w: r.w - 2 * side, h: r.h - top - bot };
+  };
+  const haloOf = (st, m) => {
+    const c = parseColor(st.stroke);
+    const sw = parseFloat(st.strokeWidth) * scaleOf(m);
+    return c && c.a > 0 && sw >= 1.5 && /^stroke/.test(st.paintOrder.trim())
+      ? { ...c, a: c.a * parseFloat(st.strokeOpacity) }
+      : null;
+  };
   if (ruleOn('low-contrast')) {
-    texts.forEach((t) => {
-      if (ignoredFor(t.el, 'low-contrast')) return;
-      const op = opacityChain(t.el);
-      let fg;
+    for (const t of texts) {
+      if (ignoredFor(t.el, 'low-contrast')) continue;
+      // SVG text can mix fills across tspans; measure each run with its own fill.
+      let runs;
       if (t.svg) {
-        const c = parseColor(t.fill);
-        if (!c) return;
-        fg = { ...c, a: c.a * t.fillOpacity * op };
+        const leaves = [...t.el.querySelectorAll('tspan')].filter(
+          (x) => !x.querySelector('tspan') && x.textContent.trim(),
+        );
+        const loose = [...t.el.childNodes].some((n) => n.nodeType === 3 && n.data.trim());
+        const m = ctmOf(t.el);
+        runs = (leaves.length ? leaves : [t.el]).map((el) => ({ el, rect: rectOf(el.getBoundingClientRect()) }));
+        if (leaves.length && loose) runs.push({ el: t.el, rect: t.box });
+        runs = runs.map((r) => {
+          const st = cs(r.el);
+          const fs = parseFloat(st.fontSize) * scaleOf(m);
+          const c = parseColor(st.fill);
+          return {
+            ...r,
+            text: r.el === t.el ? t.text : snippet(r.el.textContent),
+            fs,
+            weight: parseInt(st.fontWeight, 10) || 400,
+            fg: c ? { ...c, a: c.a * parseFloat(st.fillOpacity) * opacityChain(r.el) } : null,
+            halo: haloOf(st, m),
+            cores: r.el === t.el ? t.cores : [coreOf(r.rect, fs)],
+          };
+        });
       } else {
         const c = parseColor(t.color);
-        if (!c) return;
-        fg = { ...c, a: c.a * op };
+        const op = opacityChain(t.el);
+        runs = [{ el: t.el, rect: t.box, text: t.text, fs: t.fs, weight: t.weight, fg: c ? { ...c, a: c.a * op } : null, halo: null, cores: t.cores }];
       }
-      if (fg.a < 0.1) return;
-      contrastItems.push({
-        selector: selectorOf(t.el),
-        text: t.text,
-        box: boxOut(t.box),
-        cores: t.cores.map(boxOut),
-        fg,
-        halo: t.halo ? { ...t.halo, a: t.halo.a * op } : null,
-        fontSize: R(t.fs),
-        weight: t.weight,
-      });
-    });
+      for (const r of runs) {
+        if (!r.fg || r.fg.a < 0.1) continue;
+        if (r.rect.w < 0.5 || r.rect.h < 0.5) continue;
+        const op = opacityChain(r.el);
+        contrastItems.push({
+          selector: selectorOf(r.el),
+          text: r.text,
+          box: boxOut(r.rect),
+          cores: r.cores.map(boxOut),
+          fg: r.fg,
+          halo: r.halo ? { ...r.halo, a: r.halo.a * op } : null,
+          fontSize: R(r.fs),
+          weight: r.weight,
+        });
+      }
+    }
   }
 
   return {

@@ -223,7 +223,10 @@ export async function lint(input, options = {}) {
             .map((f) => ({
               severity: f.severity,
               index: findings.indexOf(f) + 1,
-              boxes: [f.box, ...(f.related || []).map((r) => r.box)].slice(0, 2),
+              // Related boxes help for overlaps and dangling ends; for big shapes they are clutter.
+              boxes: [f.box, ...(f.related || []).map((r) => r.box)]
+                .slice(0, 2)
+                .filter((b, k) => k === 0 || ['text-overlap', 'text-covered', 'dangling-connector'].includes(f.rule)),
               points: f.rule === 'dangling-connector' ? f.data.ends.map((e) => e.at) : [],
             }));
           const out = await page.evaluate(annotate, { png: s.png, marks, dpr: o.scale, base: s.base });
