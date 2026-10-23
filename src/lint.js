@@ -213,6 +213,11 @@ export async function lint(input, options = {}) {
     }
 
     const findings = mergeThemes(perTheme);
+    for (const f of findings) {
+      if (f.rule === 'low-contrast' && o.themes.length > 1 && f.themes.length === 1 && f.data.suggestion) {
+        f.hint = `in the ${f.themes[0]} theme (prefers-color-scheme: ${f.themes[0]}), ` + f.hint;
+      }
+    }
     const written = [];
     if (o.shot && shots.length) {
       const page = await browser.newPage();

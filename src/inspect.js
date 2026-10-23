@@ -174,6 +174,15 @@ export function inspect(opts) {
     return new DOMPoint(p.x, p.y).matrixTransform(inv);
   };
 
+  // A distance in screen px, expressed in the element's own user units so the
+  // hint can be applied to the source directly.
+  const amt = (el, px) => {
+    if (!isSvg(el)) return `${Math.ceil(px)}px`;
+    const k = scaleOf(ctmOf(el));
+    const v = Math.ceil(px / k);
+    return Math.abs(k - 1) < 0.05 ? `${v}px` : `${v} units`;
+  };
+
   const outermostSvg = (el) => {
     let s = el.ownerSVGElement || (el.localName === 'svg' ? el : null);
     while (s && s.ownerSVGElement) s = s.ownerSVGElement;
@@ -431,10 +440,10 @@ export function inspect(opts) {
         let hint;
         if (moveY <= moveX) {
           const down = bCenter.y >= aCenter.y;
-          hint = `move "${b.text}" ${Math.ceil(moveY)}px ${down ? 'down' : 'up'} (or "${a.text}" ${Math.ceil(moveY)}px ${down ? 'up' : 'down'})`;
+          hint = `move "${b.text}" ${amt(b.el, moveY)} ${down ? 'down' : 'up'} (or "${a.text}" ${amt(a.el, moveY)} ${down ? 'up' : 'down'})`;
         } else {
           const right = bCenter.x >= aCenter.x;
-          hint = `move "${b.text}" ${Math.ceil(moveX)}px ${right ? 'right' : 'left'} (or "${a.text}" ${Math.ceil(moveX)}px ${right ? 'left' : 'right'})`;
+          hint = `move "${b.text}" ${amt(b.el, moveX)} ${right ? 'right' : 'left'} (or "${a.text}" ${amt(a.el, moveX)} ${right ? 'left' : 'right'})`;
         }
         findings.push({
           rule: 'text-overlap',
@@ -595,11 +604,13 @@ export function inspect(opts) {
         const desc = sides.map(([s, v]) => `${Math.ceil(v)}px past the ${s}`).join(', ');
         const [side, amount] = sides.sort((a, b) => b[1] - a[1])[0];
         const away = { left: 'right', right: 'left', top: 'down', bottom: 'up' }[side];
-        const hint =
-          c.what === 'the SVG viewBox'
-            ? `move it ${Math.ceil(amount) + 2}px ${away}, or grow the viewBox on the ${side}`
+        const both = (out.left > 1.5 && out.right > 1.5) || (out.top > vSlack && out.bottom > vSlack);
+        const hint = both
+          ? `the text is bigger than ${c.what}: shorten it, break it into two lines, or use a smaller font size`
+          : c.what === 'the SVG viewBox'
+            ? `move it ${amt(t.el, amount + 2)} ${away}, or grow the viewBox on the ${side}`
             : c.what === 'the page'
-              ? `move it ${Math.ceil(amount) + 2}px ${away}`
+              ? `move it ${amt(t.el, amount + 2)} ${away}`
               : `shorten the text, let it wrap, or make the ${c.what} ${Math.ceil(amount) + 2}px ${side === 'left' || side === 'right' ? 'wider' : 'taller'}`;
         findings.push({
           rule: 'text-clipped',
@@ -667,7 +678,7 @@ export function inspect(opts) {
           : `${el.localName} sticks ${Math.ceil(worst[1])}px out of ${what} on the ${worst[0]}`,
         ...describe(el, box),
         related: [],
-        hint: `move it ${Math.ceil(worst[1]) + 2}px ${away}, or enlarge ${what === 'the page' ? 'the page' : 'the viewBox'} on the ${worst[0]}`,
+        hint: `move it ${amt(el, worst[1] + 2)} ${away}, or enlarge ${what === 'the page' ? 'the page' : 'the viewBox'} on the ${worst[0]}`,
         data: { outsideFraction: R(outside), overflow: Object.fromEntries(Object.entries(over).map(([k, v]) => [k, R(v)])) },
       });
     };
@@ -797,7 +808,13 @@ export function inspect(opts) {
         return {
           which,
           at: { x: R(p.x), y: R(p.y) },
-          nearest: n ? { selector: selectorOf(n.t.el), distance: R(n.d), point: (({ x, y }) => ({ x: R(x), y: R(y) }))(clampToBox(n.t.box, p)) } : null,
+          nearest: n
+            ? (() => {
+                const q = clampToBox(n.t.box, p);
+                const lp = s.m ? new DOMPoint(q.x, q.y).matrixTransform(s.m.inverse()) : q;
+                return { selector: selectorOf(n.t.el), distance: R(n.d), point: { x: R(q.x), y: R(q.y) }, local: { x: R(lp.x), y: R(lp.y) } };
+              })()
+            : null,
         };
       });
       const parts = ends2.map((e) =>
@@ -807,7 +824,7 @@ export function inspect(opts) {
       );
       const hintParts = ends2.map((e) =>
         e.nearest && e.nearest.distance < 200
-          ? `extend the ${e.which} to (${Math.round(e.nearest.point.x)}, ${Math.round(e.nearest.point.y)}) on ${e.nearest.selector}`
+          ? `extend the ${e.which} to (${Math.round(e.nearest.local.x)}, ${Math.round(e.nearest.local.y)}) in the ${s.tag}'s coordinates, the edge of ${e.nearest.selector}`
           : `point the ${e.which} at the node it belongs to, or remove the line`,
       );
       findings.push({
@@ -819,7 +836,7 @@ export function inspect(opts) {
           const t = nodeLike.find((x) => selectorOf(x.el) === e.nearest.selector);
           return describe(t.el, t.box);
         }),
-        hint: hintParts.join('; ') + ' (coordinates are page pixels; convert to SVG units if the figure is scaled)',
+        hint: hintParts.join('; '),
         data: { ends: ends2, explicit: !!explicit },
       });
     }
@@ -1054,28 +1071,32 @@ export async function annotate({ png, marks, dpr, base }) {
   }
   ctx.drawImage(bmp, 0, 0);
   ctx.scale(dpr, dpr);
+  const placed = [];
+  const clash = (a) => placed.some((b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h);
   marks.forEach((m) => {
     const color = m.severity === 'error' ? '#e5243b' : '#f08c00';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 2.5;
     ctx.strokeStyle = color;
-    ctx.setLineDash(m.severity === 'error' ? [] : [5, 3]);
-    for (const b of m.boxes) ctx.strokeRect(b.x - 2, b.y - 2, b.width + 4, b.height + 4);
+    ctx.setLineDash(m.severity === 'error' ? [] : [6, 4]);
+    for (const b of m.boxes) ctx.strokeRect(b.x - 3, b.y - 3, b.width + 6, b.height + 6);
     for (const p of m.points || []) {
       ctx.beginPath();
-      ctx.arc(p.x, p.y, 7, 0, Math.PI * 2);
+      ctx.arc(p.x, p.y, 8, 0, Math.PI * 2);
       ctx.stroke();
     }
     ctx.setLineDash([]);
     const b = m.boxes[0];
     const label = String(m.index);
-    ctx.font = 'bold 12px sans-serif';
-    const w = ctx.measureText(label).width + 8;
-    const lx = Math.max(0, b.x - 2);
-    const ly = Math.max(0, b.y - 18);
+    ctx.font = 'bold 14px sans-serif';
+    const w = ctx.measureText(label).width + 10;
+    // Number tags go above the box; shift right when two would land on each other.
+    const tag = { x: Math.max(0, b.x - 3), y: Math.max(0, b.y - 23), w, h: 20 };
+    while (clash(tag)) tag.x += w + 3;
+    placed.push(tag);
     ctx.fillStyle = color;
-    ctx.fillRect(lx, ly, w, 16);
+    ctx.fillRect(tag.x, tag.y, tag.w, tag.h);
     ctx.fillStyle = '#fff';
-    ctx.fillText(label, lx + 4, ly + 12);
+    ctx.fillText(label, tag.x + 5, tag.y + 15);
   });
   const out = await cv.convertToBlob({ type: 'image/png' });
   const buf = new Uint8Array(await out.arrayBuffer());

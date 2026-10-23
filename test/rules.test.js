@@ -99,7 +99,7 @@ describe('dangling-connector', () => {
     assert.equal(req.data.ends[0].which, 'end');
     assert.equal(req.data.ends[0].nearest.selector, '#server');
     assert.ok(Math.abs(req.data.ends[0].nearest.distance - 40) < 2);
-    assert.match(req.hint, /\(360, 115\) on #server/);
+    assert.match(req.hint, /\(360, 115\) in the path.s coordinates, the edge of #server/);
   });
 
   test('svg arrows over an html diagram', async () => {
