@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="220" viewBox="0 0 420 220">
+  <rect width="420" height="220" fill="#ffffff"/>
+  <circle cx="40" cy="100" r="8" fill="#0969da"/>
+  <circle cx="380" cy="100" r="8" fill="#0969da"/>
+  <line x1="40" y1="100" x2="380" y2="100" stroke="#57606a" stroke-width="2"/>
+  <!-- halo label on the line -->
+  <text x="160" y="105" font-family="sans-serif" font-size="14" fill="#1f2328" stroke="#ffffff" stroke-width="4" paint-order="stroke">retries</text>
+  <!-- label on an opaque chip sitting on the line -->
+  <rect x="250" y="90" width="60" height="20" rx="4" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text x="280" y="105" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#1f2328">3x</text>
+  <!-- label above the line -->
+  <text x="60" y="88" font-family="sans-serif" font-size="12" fill="#1f2328">request</text>
+</svg>

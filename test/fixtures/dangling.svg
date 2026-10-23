@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="240" viewBox="0 0 520 240">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#444"/>
+    </marker>
+  </defs>
+  <rect width="520" height="240" fill="#ffffff"/>
+  <rect id="client" x="20" y="90" width="110" height="50" rx="6" fill="#ddf4ff" stroke="#0969da"/>
+  <text x="75" y="120" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1f2328">Client</text>
+  <rect id="server" x="360" y="90" width="130" height="50" rx="6" fill="#ddf4ff" stroke="#0969da"/>
+  <text x="425" y="120" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#1f2328">Server</text>
+  <!-- arrow stops 40px short of the server -->
+  <path id="req" d="M130 115 L320 115" stroke="#444" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  <!-- plain line leaving the client and going nowhere -->
+  <line id="stray" x1="75" y1="140" x2="75" y2="210" stroke="#444" stroke-width="2"/>
+</svg>

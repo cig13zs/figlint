@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200" viewBox="0 0 400 200">
+  <rect width="400" height="200" fill="#ffffff"/>
+  <g data-figlint-ignore="">
+    <text x="40" y="80" font-family="sans-serif" font-size="16" fill="#222">Payment service</text>
+    <text x="90" y="88" font-family="sans-serif" font-size="16" fill="#222">Queue worker</text>
+  </g>
+  <text x="20" y="150" font-family="sans-serif" font-size="14" fill="#cccccc" data-figlint-ignore="low-contrast">watermark</text>
+  <text x="200" y="150" font-family="sans-serif" font-size="14" fill="#cccccc" data-figlint-ignore="text-overlap">still checked</text>
+</svg>

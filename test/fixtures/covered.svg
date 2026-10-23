@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="160" viewBox="0 0 300 160">
+  <rect width="300" height="160" fill="#ffffff"/>
+  <text id="under" x="40" y="80" font-family="sans-serif" font-size="16" fill="#1f2328">Hidden label</text>
+  <rect id="lid" x="30" y="60" width="140" height="30" fill="#ddf4ff" stroke="#0969da"/>
+</svg>

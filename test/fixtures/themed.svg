@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="100" viewBox="0 0 320 100">
+  <style>
+    .bg { fill: #ffffff } .ink { fill: #1f2328 }
+    @media (prefers-color-scheme: dark) { .bg { fill: #0d1117 } .ink { fill: #e6edf3 } }
+  </style>
+  <rect class="bg" width="320" height="100"/>
+  <text class="ink" x="20" y="55" font-family="sans-serif" font-size="16">Readable in both themes</text>
+</svg>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="220" viewBox="0 0 420 220">
+  <rect width="420" height="220" fill="#ffffff"/>
+  <text x="30" y="40" font-family="sans-serif" font-size="16" fill="#222">Payment service</text>
+  <text x="30" y="64" font-family="sans-serif" font-size="16" fill="#222">Queue worker</text>
+  <!-- tight two-line label -->
+  <text x="220" y="40" font-family="sans-serif" font-size="14" fill="#222">
+    <tspan x="220" y="40">Two lines with</tspan>
+    <tspan x="220" dy="15">tight leading</tspan>
+  </text>
+  <!-- text intentionally on a filled badge -->
+  <rect x="30" y="110" width="120" height="30" rx="15" fill="#1f6feb"/>
+  <text x="90" y="130" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#ffffff">v2.4 badge</text>
+  <circle cx="260" cy="140" r="32" fill="#1a7f37"/>
+  <text x="260" y="145" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="700" fill="#ffffff">OK</text>
+  <!-- inline mixed styles that touch -->
+  <text x="30" y="190" font-family="sans-serif" font-size="14" fill="#222">Status: <tspan font-weight="700">ready</tspan></text>
+</svg>

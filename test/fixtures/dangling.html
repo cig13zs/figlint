@@ -1,0 +1,19 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  body { margin: 0; font: 15px sans-serif; color: #1f2328; background: #fff; }
+  .stage { position: relative; width: 640px; height: 260px; }
+  .node { position: absolute; width: 140px; height: 48px; display: flex; align-items: center; justify-content: center;
+          background: #ddf4ff; border: 1px solid #0969da; border-radius: 8px; }
+  svg { position: absolute; inset: 0; }
+</style></head><body>
+<div class="stage">
+  <svg width="640" height="260">
+    <defs><marker id="a" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#444"/></marker></defs>
+    <line id="ok" x1="180" y1="64" x2="400" y2="64" stroke="#444" stroke-width="2" marker-end="url(#a)"/>
+    <line id="short" x1="110" y1="88" x2="110" y2="150" stroke="#444" stroke-width="2" marker-end="url(#a)"/>
+  </svg>
+  <div class="node" style="left:40px; top:40px">Browser</div>
+  <div class="node" style="left:400px; top:40px">CDN</div>
+  <div class="node" style="left:40px; top:190px">Origin</div>
+</div>
+</body></html>
