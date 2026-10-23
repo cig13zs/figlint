@@ -1,0 +1,28 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      # Install the Chromium build that matches the locked playwright-core version.
+      - run: npx playwright-core install --with-deps chromium
+      - run: npm test
+      - name: Lint the demo figures
+        run: |
+          node bin/figlint.js docs/demo/fixed.svg
+          node bin/figlint.js examples/bar-chart.svg examples/flow.html
+          if node bin/figlint.js docs/demo/broken.svg > /dev/null; then echo "broken.svg should fail"; exit 1; fi
