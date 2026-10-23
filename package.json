@@ -1,0 +1,45 @@
+{
+  "name": "figlint",
+  "version": "0.1.0",
+  "description": "Layout lint for agent-drawn HTML and SVG figures: overlapping labels, clipped text, dangling arrows, low contrast in light and dark.",
+  "type": "module",
+  "bin": {
+    "figlint": "bin/figlint.js"
+  },
+  "exports": {
+    ".": "./src/lint.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "skills"
+  ],
+  "scripts": {
+    "test": "node --test test/"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "svg",
+    "diagram",
+    "lint",
+    "layout",
+    "labels",
+    "contrast",
+    "agent",
+    "skill",
+    "playwright"
+  ],
+  "author": "jju1s",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cig13zs/figlint.git"
+  },
+  "homepage": "https://github.com/cig13zs/figlint#readme",
+  "bugs": "https://github.com/cig13zs/figlint/issues",
+  "dependencies": {
+    "playwright-core": "^1.63.0"
+  }
+}
