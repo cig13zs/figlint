@@ -112,6 +112,10 @@ describe('dangling-connector', () => {
   test('attached arrows, legend swatches, axes and ticks are fine', async () => {
     clean(await run('dangling-clean.svg'));
   });
+
+  test('sequence diagram: dashed lifelines that arrows end on are not connectors', async () => {
+    clean(await run('lifelines-clean.svg'));
+  });
 });
 
 describe('label-on-line', () => {

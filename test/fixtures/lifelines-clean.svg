@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="380" viewBox="0 0 600 380" font-family="Inter, Helvetica, Arial, sans-serif">
+  <defs><marker id="m" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#1f2328"/></marker></defs>
+  <rect width="600" height="380" fill="#ffffff"/>
+  <g font-size="14" font-weight="600" text-anchor="middle" fill="#1f2328">
+    <rect x="40" y="20" width="120" height="36" rx="6" fill="#ddf4ff" stroke="#0969da"/><text x="100" y="43">Browser</text>
+    <rect x="240" y="20" width="120" height="36" rx="6" fill="#ddf4ff" stroke="#0969da"/><text x="300" y="43">Auth server</text>
+    <rect x="440" y="20" width="120" height="36" rx="6" fill="#ddf4ff" stroke="#0969da"/><text x="500" y="43">API</text>
+  </g>
+  <g stroke="#8c959f" stroke-dasharray="4 4">
+    <line x1="100" y1="56" x2="100" y2="360"/><line x1="300" y1="56" x2="300" y2="360"/><line x1="500" y1="56" x2="500" y2="360"/>
+  </g>
+  <g stroke="#1f2328" stroke-width="1.5" fill="none" marker-end="url(#m)">
+    <path d="M100 100 L300 100"/>
+    <path d="M300 150 L100 150"/>
+    <path d="M100 210 L500 210"/>
+    <path d="M500 260 L300 260"/>
+    <path d="M300 300 L500 300"/>
+    <path d="M500 340 L100 340"/>
+  </g>
+  <g font-size="12" fill="#1f2328" text-anchor="middle" stroke="#ffffff" stroke-width="4" paint-order="stroke">
+    <text x="200" y="92">GET /authorize</text>
+    <text x="200" y="142">302 + code</text>
+    <text x="300" y="202">GET /me (bearer token)</text>
+    <text x="400" y="252">introspect token</text>
+    <text x="400" y="292">active: true</text>
+    <text x="300" y="332">200 { "name": "Ada" }</text>
+  </g>
+</svg>

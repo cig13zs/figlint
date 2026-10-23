@@ -734,10 +734,33 @@ export function inspect(opts) {
     }
   };
 
+  // Points along a stroke, in page coordinates, about every 1.5px.
+  const sampleCache = new Map();
+  const samples = (sh) => {
+    if (sampleCache.has(sh.el)) return sampleCache.get(sh.el);
+    const pts = [];
+    try {
+      const len = sh.el.getTotalLength();
+      const step = Math.max(1.5 / scaleOf(sh.m), len / 1500);
+      for (let at = 0; at <= len; at += step) {
+        const q = sh.el.getPointAtLength(at);
+        pts.push(apply(sh.m, q.x, q.y));
+      }
+      const q = sh.el.getPointAtLength(len);
+      pts.push(apply(sh.m, q.x, q.y));
+    } catch {}
+    sampleCache.set(sh.el, pts);
+    return pts;
+  };
+
   // Does point p touch target t within tol px?
   const touches = (t, p, tol) => {
-    if (distToBox(t.box, p) > tol) return false;
+    if (distToBox(t.box, p) > tol + (t.shape ? t.shape.sw / 2 : 0)) return false;
     if (!t.geometry) return true;
+    if (t.kind === 'line') {
+      const reach = tol + t.shape.sw / 2 + 1;
+      return samples(t.shape).some((q) => Math.hypot(q.x - p.x, q.y - p.y) <= reach);
+    }
     const ring = [p];
     for (let k = 0; k < 8; k++) {
       const a = (k * Math.PI) / 4;
@@ -763,15 +786,28 @@ export function inspect(opts) {
     const textTargets = texts.map((t) => ({ el: t.el, box: grow(t.box, 1), geometry: false, kind: 'text' }));
     const shapeTargets = shapes
       .filter((s) => area(s.box) < 0.4 * area(s.canvas) || s.open)
-      .map((s) => ({ el: s.el, box: s.box, geometry: s.geometry, kind: s.open ? 'line' : 'node', complex: s.complex }));
+      .map((s) => ({ el: s.el, box: s.box, geometry: s.geometry, kind: s.open ? 'line' : 'node', complex: s.complex, shape: s }));
     const boxTargets = nodeBoxes.map((b) => ({ el: b.el, box: b.box, geometry: false, kind: 'node' }));
     const targets = [...shapeTargets, ...boxTargets, ...textTargets];
 
+    // Lines that arrows end on (sequence-diagram lifelines, buses) are rails, not connectors.
+    const rails = new Set();
+    for (const s of shapes) {
+      if (!s.geometry || !s.open || !(s.hint || s.markerStart || s.markerEnd)) continue;
+      const ends = endsOf(s);
+      if (!ends) continue;
+      for (const p of [ends.start, ends.end]) {
+        for (const t of shapeTargets) {
+          if (t.kind === 'line' && t.el !== s.el && touches(t, p, tolerance + s.sw / 2)) rails.add(t.el);
+        }
+      }
+    }
     for (const s of shapes) {
       if (!s.geometry || !s.open || s.strokeA < 0.05 || s.sw <= 0) continue;
       if (ignoredFor(s.el, 'dangling-connector')) continue;
+      const dashed = (cs(s.el).strokeDasharray || 'none') !== 'none';
       const explicit = s.hint || s.markerStart || s.markerEnd;
-      if (!explicit && s.complex) continue;
+      if (!explicit && (s.complex || dashed || rails.has(s.el))) continue;
       const ends = endsOf(s);
       if (!ends || ends.len < 2) continue;
       if (!explicit && ends.len < 8) continue;
@@ -845,21 +881,6 @@ export function inspect(opts) {
   // ---------- rule: label-on-line ----------
 
   if (ruleOn('label-on-line') && lineShapes.length) {
-    const sampleCache = new Map();
-    const samples = (s) => {
-      if (sampleCache.has(s.el)) return sampleCache.get(s.el);
-      const pts = [];
-      try {
-        const len = s.el.getTotalLength();
-        const step = Math.max(1.5 / scaleOf(s.m), len / 1500);
-        for (let at = 0; at <= len; at += step) {
-          const q = s.el.getPointAtLength(at);
-          pts.push(apply(s.m, q.x, q.y));
-        }
-      } catch {}
-      sampleCache.set(s.el, pts);
-      return pts;
-    };
     for (const t of texts) {
       if (ignoredFor(t.el, 'label-on-line')) continue;
       if (t.halo && t.halo.a >= 0.6) continue;
